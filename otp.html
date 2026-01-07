@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTP Verification</title>
+<style>
+body { font-family: Arial; background:#eef2f3; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+.box { background:white; padding:25px; width:90%; max-width:350px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.2); text-align:center; }
+input, button { width:100%; padding:12px; margin:10px 0; font-size:16px; box-sizing:border-box; }
+button { background:#2196F3; color:white; border:none; border-radius:6px; cursor:pointer; }
+.error { color:red; display:none; margin-top:10px; }
+.info { white-space: pre-line; margin-bottom:12px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>OTP Verification</h2>
+<p class="info" id="info"></p>
+<input id="otp" placeholder="Enter OTP">
+<button onclick="verifyOTP()">Verify OTP</button>
+<div class="error" id="error">Wrong OTP</div>
+</div>
+
+<script>
+const BASE_OTP = 11111;
+
+const name = localStorage.getItem("userName");
+const phone = localStorage.getItem("userPhone");
+
+if(!name || !phone) window.location.href="index.html";
+
+document.getElementById("info").innerText = "Hello "+name+"\nPhone: "+phone;
+
+// Calculate current dynamic OTP
+function getCurrentOTP(){
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const multiplier = parseInt(hh+mm.slice(0,1)+mm.slice(1,2)); // first 3 digits
+    return BASE_OTP * multiplier;
+}
+
+function verifyOTP(){
+    const entered = document.getElementById("otp").value.trim();
+    const currentOTP = getCurrentOTP().toString();
+
+    if(entered === currentOTP){
+        window.location.href="success.html";
+    } else {
+        document.getElementById("error").style.display="block";
+    }
+}
+</script>
+
+</body>
+</html>
